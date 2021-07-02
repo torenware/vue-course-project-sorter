@@ -18,34 +18,45 @@
   </base-container>
 </template>
 
-<script>
+
+<script lang="ts">
+import { defineComponent, Ref } from 'vue'
 import { ref, computed, toRefs } from 'vue';
 import useSearch from '../../hooks/search';
 import UserItem from './UserItem.vue';
+import type { User } from '../../types';
 
-export default {
+export default defineComponent({
   components: {
     UserItem,
   },
+  // props: {
+  //   users: {
+  //     type: Array as () => Array<User>
+  //   }
+  // },
   props: ['users'],
   emits: ['list-projects'],
   setup(props) {
     
     // Convert users to a ref so we can share this
     // code with ProjectsList:
-    const { users } = toRefs(props);
+    const { users  } = toRefs(props);
+    const userList = users as Ref<Array<User>>; 
     const {
       enteredSearchTerm,
       availableItems,
       updateSearch
-    } = useSearch(users, 'fullName');
+    } = useSearch(userList, 'fullName');
 
-    const sorting = ref(null);
+    const sorting: Ref<string | null> = ref(null);
     const displayedUsers = computed(function () {
       if (!sorting.value) {
         return availableItems.value;
       }
-      return availableItems.value.slice().sort((u1, u2) => {
+      const itemsList = availableItems.value as Array<User>;
+
+      return itemsList.sort((u1: User, u2: User) => {
         if (sorting.value === 'asc' && u1.fullName > u2.fullName) {
           return 1;
         } else if (sorting.value === 'asc') {
@@ -58,7 +69,7 @@ export default {
       });
     });
 
-    function sort(mode) {
+    function sort(mode: string) {
       sorting.value = mode;
     }
 
@@ -70,7 +81,7 @@ export default {
       sort
     };
   },
-};
+});
 </script>
 
 <style scoped>
