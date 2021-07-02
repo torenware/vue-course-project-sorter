@@ -22,20 +22,19 @@
 
 <script lang="ts">
 import { defineComponent, Ref } from 'vue'
-import { ref, computed, toRefs, onBeforeUpdate } from 'vue';
+import { ref, toRefs, onBeforeUpdate } from 'vue';
 import useSearch from '../../hooks/search';
+import useSortItems from '../../hooks/sort';
 import UserItem from './UserItem.vue';
 import type { User } from '../../types';
+
+type SortParam  = ('asc' | 'desc' | null);
 
 export default defineComponent({
   components: {
     UserItem,
   },
-  // props: {
-  //   users: {
-  //     type: Array as () => Array<User>
-  //   }
-  // },
+
   props: ['users', 'selectedUser'],
   emits: ['list-projects'],
   setup(props) {
@@ -50,34 +49,16 @@ export default defineComponent({
       updateSearch
     } = useSearch(userList, 'fullName');
 
-    const sorting: Ref<string | null> = ref(null);
-    const displayedUsers = computed(function () {
-      if (!sorting.value) {
-        return availableItems.value as Array<User>;
-      }
-      const itemsList = availableItems.value as Array<User>;
-
-      return itemsList.sort((u1: User, u2: User) => {
-        if (sorting.value === 'asc' && u1.fullName > u2.fullName) {
-          return 1;
-        } else if (sorting.value === 'asc') {
-          return -1;
-        } else if (sorting.value === 'desc' && u1.fullName > u2.fullName) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
-    });
+    const sorting: Ref<SortParam> = ref(null);
+    const { sortedItems } = useSortItems(availableItems as Ref<User[]>, 'fullName', sorting);
 
     onBeforeUpdate(() => {
       console.log('selected user:', props.selectedUser);
     });
 
-    function sort(mode: string) {
+    function sort(mode: SortParam) {
       if (sorting.value === mode) {
         // already selected, so toggle
-        console.log('unselect');
         sorting.value = null;
       }
       else {
@@ -88,7 +69,7 @@ export default defineComponent({
     return {
       enteredSearchTerm,
       updateSearch,
-      displayedUsers,
+      displayedUsers: sortedItems,
       sorting,
       sort
     };

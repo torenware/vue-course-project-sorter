@@ -1,15 +1,16 @@
-import type {ComputedRef, Ref} from 'vue';
+export interface Dictionary {
+  [index: string]: string | Object;
+}
 
-export interface Project {
+export interface Project extends Dictionary {
   id: string;
   title: string;
 }
 
-export interface User {
+export interface User extends Dictionary {
   id: string;
   fullName: string;
   projects: Project[];
 }
 
-// For our sortable items.
-export type SortableItemsArray<T> = ComputedRef<T[] | Ref<T[]>>;
+export type SortParam = 'asc' | 'desc' | null;
