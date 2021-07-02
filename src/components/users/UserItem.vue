@@ -1,13 +1,13 @@
 <template>
   <li>
     <h3>{{ userName }}</h3>
-    <button @click="viewProjects">View Projects</button>
+    <button @click="viewProjects" :class="{selected: isSelected}">View Projects</button>
   </li>
 </template>
 
 <script>
 export default {
-  props: ['id', 'userName'],
+  props: ['id', 'userName', 'isSelected'],
   emits: ['list-projects'],
   methods: {
     viewProjects() {
@@ -18,6 +18,7 @@ export default {
 </script>
 
 <style scoped>
+
 li {
   margin: 0.5rem 0;
   padding: 1rem;

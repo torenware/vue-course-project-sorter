@@ -10,10 +10,11 @@ export default function useSearch<T extends Object>(
   const availableItems = computed(
     (): Array<T> => {
       if (activeSearchTerm.value) {
+        const ucTerm = activeSearchTerm.value.toUpperCase();
         return items.value.filter((item: T) => {
           // @ts-ignore
-          const text = item[searchProp];
-          text.includes(activeSearchTerm.value);
+          const text = item[searchProp].toUpperCase();
+          return text.includes(ucTerm);
         });
       }
       return items.value;

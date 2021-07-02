@@ -12,6 +12,7 @@
         :key="user.id"
         :user-name="user.fullName"
         :id="user.id"
+        :is-selected="selectedUser && (selectedUser.id === user.id)"
         @list-projects="$emit('list-projects', $event)"
       ></user-item>
     </ul>
@@ -21,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, Ref } from 'vue'
-import { ref, computed, toRefs } from 'vue';
+import { ref, computed, toRefs, onBeforeUpdate } from 'vue';
 import useSearch from '../../hooks/search';
 import UserItem from './UserItem.vue';
 import type { User } from '../../types';
@@ -35,7 +36,7 @@ export default defineComponent({
   //     type: Array as () => Array<User>
   //   }
   // },
-  props: ['users'],
+  props: ['users', 'selectedUser'],
   emits: ['list-projects'],
   setup(props) {
     
@@ -52,7 +53,7 @@ export default defineComponent({
     const sorting: Ref<string | null> = ref(null);
     const displayedUsers = computed(function () {
       if (!sorting.value) {
-        return availableItems.value;
+        return availableItems.value as Array<User>;
       }
       const itemsList = availableItems.value as Array<User>;
 
@@ -69,8 +70,19 @@ export default defineComponent({
       });
     });
 
+    onBeforeUpdate(() => {
+      console.log('selected user:', props.selectedUser);
+    });
+
     function sort(mode: string) {
-      sorting.value = mode;
+      if (sorting.value === mode) {
+        // already selected, so toggle
+        console.log('unselect');
+        sorting.value = null;
+      }
+      else {
+        sorting.value = mode;
+      }
     }
 
     return {

@@ -1,6 +1,6 @@
 <template>
   <main>
-    <user-list :users="activeUsers" @list-projects="selectUser"></user-list>
+    <user-list :users="activeUsers" :selected-user="selectedUser" @list-projects="selectUser" />
     <projects-list :user="selectedUser"></projects-list>
   </main>
 </template>
