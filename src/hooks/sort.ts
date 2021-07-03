@@ -9,10 +9,9 @@ export default function useSortItems<T>(
 ) {
   const sortedItems = computed(function() {
     if (!sorting.value) {
-      console.log('sorting is null');
       return items.value as Array<T>;
     }
-    const itemsList = items.value as Array<T>;
+    const itemsList = [...items.value] as Array<T>;
 
     return itemsList.sort((u1: T, u2: T) => {
       if (sorting.value === 'asc' && u1[sortProp] > u2[sortProp]) {

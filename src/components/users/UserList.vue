@@ -51,7 +51,6 @@ export default defineComponent({
 
     const sorting: Ref<SortParam> = ref(null);
     const sortProp: keyof User = 'fullName';
-
     const { sortedItems } = useSortItems(availableItems as Ref<User[]>, sortProp, sorting);
 
     function sort(mode: SortParam) {

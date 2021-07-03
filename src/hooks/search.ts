@@ -1,8 +1,8 @@
 import { ref, computed, watch, Ref } from 'vue';
 
-export default function useSearch<T extends Object>(
+export default function useSearch<T>(
   items: Ref<Array<T>>,
-  searchProp: string
+  searchProp: keyof T
 ) {
   const enteredSearchTerm = ref('');
   const activeSearchTerm = ref('');
