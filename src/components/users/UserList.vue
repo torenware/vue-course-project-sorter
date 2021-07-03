@@ -22,7 +22,7 @@
 
 <script lang="ts">
 import { defineComponent, Ref } from 'vue'
-import { ref, toRefs, onBeforeUpdate } from 'vue';
+import { ref, toRefs } from 'vue';
 import useSearch from '../../hooks/search';
 import useSortItems from '../../hooks/sort';
 import UserItem from './UserItem.vue';
@@ -50,11 +50,9 @@ export default defineComponent({
     } = useSearch(userList, 'fullName');
 
     const sorting: Ref<SortParam> = ref(null);
-    const { sortedItems } = useSortItems(availableItems as Ref<User[]>, 'fullName', sorting);
+    const sortProp: keyof User = 'fullName';
 
-    onBeforeUpdate(() => {
-      console.log('selected user:', props.selectedUser);
-    });
+    const { sortedItems } = useSortItems(availableItems as Ref<User[]>, sortProp, sorting);
 
     function sort(mode: SortParam) {
       if (sorting.value === mode) {
